@@ -20,11 +20,25 @@ io.sockets.on('connection',function(socket){
             callback(true);
             socket.nickname = data;
             nicknames.push(socket.nickname);
-            io.sockets.emit("username",nicknames);
+            updateNickName()
         }
     })
     
+    function updateNickName(){
+        io.sockets.emit("username",nicknames);
+    }
+    
     socket.on('send-message',function(data){
-        io.sockets.emit("new-message",data)
+        io.sockets.emit("new-message", {
+            msg : data , 
+            name : socket.nickname
+        })
+    })
+
+    socket.on("disconnect",function(data){
+        if(!socket.nickname)
+            return;
+        nicknames.splice(nicknames.indexOf(socket.nickname),1);
+        updateNickName();
     })
 })
