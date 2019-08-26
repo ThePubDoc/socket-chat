@@ -11,6 +11,7 @@
     <div id="chat">
 
     </div>
+
     <form id="send-message">
         <input size="35" id="message">
         <input type="submit">
@@ -20,7 +21,17 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         jQuery(function($){
-            
+            var socket = io.connect();
+
+            var $messageForm = $('#send-message');
+            var $messageBox = $('#message');
+            var $chat = $('#chat');
+
+            $messageForm.submit(function(e) {
+                e.preventDefault();
+                socket.emit("send-message",$messageBox.val());
+                $messageBox.val("");
+            })
         })
     </script>
 </body>
